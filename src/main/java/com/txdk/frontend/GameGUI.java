@@ -20,6 +20,7 @@ public class GameGUI extends JFrame{
     
     private JLabel titleLabel;
     private JLabel textLabel;
+    private JButton newGameButton;
     private JPanel buttonPanel;
     private JPanel containerPanel;
     private ArrayList<JButton> buttonArray;
@@ -78,7 +79,6 @@ public class GameGUI extends JFrame{
             button.setFocusable(false);
             button.setOpaque(true);
             button.setContentAreaFilled(true);
-            button.setBackground(Color.red);
             button.setBorder(BorderFactory.createEtchedBorder());
             buttonPanel.add(button);
             buttonArray.add(button);
@@ -86,6 +86,18 @@ public class GameGUI extends JFrame{
 
         buttonPanel.setPreferredSize(new Dimension(20, 15));
         containerPanel.add(buttonPanel);
+    }
+
+    public void createNewGameButton()
+    {
+        newGameButton = new JButton();
+        newGameButton.addActionListener(event -> {
+            this.remove(containerPanel);
+            startGame(3);
+        });
+        newGameButton.setText("New Game");
+        newGameButton.setFocusable(false);
+        containerPanel.add(newGameButton);
     }
 
     public Color assignColor(boolean state)
@@ -118,6 +130,7 @@ public class GameGUI extends JFrame{
         containerPanel.setLayout(new BoxLayout(containerPanel, BoxLayout.Y_AXIS));
         addTitle();
         addText();
+        createNewGameButton();
         createButtons(boardSize);
         this.getContentPane().add(containerPanel);
         this.setVisible(true);
