@@ -2,6 +2,7 @@ package com.txdk.frontend;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class GameGUI extends JFrame{
     private JButton newGameButton;
     private JPanel buttonPanel;
     private JPanel containerPanel;
+    private JPanel utilityPanel;
     private ArrayList<JButton> buttonArray;
 
     private IconResizer iconResizer;
@@ -35,6 +37,7 @@ public class GameGUI extends JFrame{
         iconResizer = new IconResizer();
         
         this.setTitle("Lights Out!");
+        this.setLayout(new FlowLayout());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1000, 1000);
     }
@@ -46,6 +49,7 @@ public class GameGUI extends JFrame{
         icon = iconResizer.resize(icon, 100, 100);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 40));
         titleLabel.setIcon(icon);
+        titleLabel.setSize(300, 50);
         titleLabel.setVisible(true);
         containerPanel.add(titleLabel);
     }
@@ -54,9 +58,10 @@ public class GameGUI extends JFrame{
     {
         textLabel = new JLabel();
         textLabel.setText(
-            "Turn all of the lights green to win!\nClicking on a light toggles its colour as well as that of all of its neighbours."
+            "<html>Turn all of the lights <font color=green>green</font> to win!<br><br>Clicking on a light toggles its colour as well as that of all of its neighbours.</html>"
             );
-        textLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        textLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        textLabel.setSize(300, 50);
         textLabel.setVisible(true);
         containerPanel.add(textLabel);
     }
@@ -84,7 +89,7 @@ public class GameGUI extends JFrame{
             buttonArray.add(button);
         }
 
-        buttonPanel.setPreferredSize(new Dimension(20, 15));
+        buttonPanel.setPreferredSize(new Dimension(500, 500));
         containerPanel.add(buttonPanel);
     }
 
@@ -97,7 +102,7 @@ public class GameGUI extends JFrame{
         });
         newGameButton.setText("New Game");
         newGameButton.setFocusable(false);
-        containerPanel.add(newGameButton);
+        utilityPanel.add(newGameButton);
     }
 
     public Color assignColor(boolean state)
@@ -128,9 +133,12 @@ public class GameGUI extends JFrame{
     {
         containerPanel = new JPanel();
         containerPanel.setLayout(new BoxLayout(containerPanel, BoxLayout.Y_AXIS));
+        containerPanel.setSize(1000, 1000);
         addTitle();
         addText();
+        utilityPanel = new JPanel();
         createNewGameButton();
+        containerPanel.add(utilityPanel);
         createButtons(boardSize);
         this.getContentPane().add(containerPanel);
         this.setVisible(true);
