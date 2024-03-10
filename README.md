@@ -19,7 +19,7 @@ java -jar target/lights-out-1.0.jar
 ```
 
 ## To do
-- Add a button to start a new game
+- Improve UI element placement 
 - Allow the user to specify the grid size via a slider
 
 ## Contact
