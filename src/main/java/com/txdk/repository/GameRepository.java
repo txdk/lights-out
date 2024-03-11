@@ -23,6 +23,7 @@ public class GameRepository implements Repository {
     public void setGameState(boolean[][] state)
     {
         int boardSize = state.length;
+        gameState = new boolean[boardSize][boardSize];
         for (int i = 0; i < boardSize; i++) {
             gameState[i] = Arrays.copyOf(state[i], boardSize);
         }

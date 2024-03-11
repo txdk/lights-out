@@ -16,6 +16,11 @@ public class GameController implements Controller {
         return gameService.getGameState();
     }
 
+    public void setBoardSize(int boardSize)
+    {
+        gameService.setBoardSize(boardSize);
+    }
+
     public boolean getStateFromIndex(int index)
     {
         return gameService.getStateFromIndex(index);

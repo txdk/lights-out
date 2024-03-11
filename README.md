@@ -20,7 +20,7 @@ java -jar target/lights-out-1.0.jar
 
 ## To do
 - Improve UI element placement 
-- Allow the user to specify the grid size via a slider
+- Refactor UI class
 
 ## Contact
 

@@ -14,14 +14,21 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 
+import com.txdk.Constants;
 import com.txdk.controller.Controller;
+import com.txdk.files.FileReader;
+import com.txdk.files.IconResizer;
 
 public class GameGUI extends JFrame {
     
+    private int selectedBoardSize;
+
     private JLabel titleLabel;
     private JLabel textLabel;
     private JButton newGameButton;
+    private JSlider slider;
     private JPanel buttonPanel;
     private JPanel containerPanel;
     private JPanel utilityPanel;
@@ -37,6 +44,8 @@ public class GameGUI extends JFrame {
         this.gameController = gameController;
         iconResizer = new IconResizer();
         fileReader = new FileReader();
+
+        selectedBoardSize = Constants.INITIAL_BOARD_SIZE;
         
         this.setTitle("Lights Out!");
         this.setLayout(new FlowLayout());
@@ -58,9 +67,8 @@ public class GameGUI extends JFrame {
 
     public void addText()
     {
-        textLabel = new JLabel();
         String text = fileReader.readTextFromFile("static/text.html");
-        textLabel.setText(text);
+        textLabel = new JLabel(text);
         textLabel.setFont(new Font("Arial", Font.PLAIN, 15));
         textLabel.setSize(300, 50);
         textLabel.setVisible(true);
@@ -101,11 +109,24 @@ public class GameGUI extends JFrame {
             event -> {
                 this.remove(containerPanel);
                 initialiseUI();
-                startGame(3);
+                startGame(selectedBoardSize);
             });
         newGameButton.setText("New Game");
         newGameButton.setFocusable(false);
         utilityPanel.add(newGameButton);
+    }
+
+    public void createSlider()
+    {
+        slider = new JSlider(Constants.MIN_BOARD_SIZE, Constants.MAX_BOARD_SIZE);
+        slider.setPaintTrack(true);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        slider.setMajorTickSpacing(1);
+        slider.setSnapToTicks(true);
+        slider.setValue(selectedBoardSize);
+        slider.addChangeListener(event -> {selectedBoardSize = slider.getValue();});
+        utilityPanel.add(slider);
     }
 
     public Color assignColor(boolean state)
@@ -141,11 +162,13 @@ public class GameGUI extends JFrame {
         addText();
         utilityPanel = new JPanel();
         createNewGameButton();
+        createSlider();
         containerPanel.add(utilityPanel);
     }
 
     public void startGame(int boardSize)
     {
+        gameController.setBoardSize(boardSize);
         createButtons(boardSize);
         this.getContentPane().add(containerPanel);
         this.setVisible(true);
