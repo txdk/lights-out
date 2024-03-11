@@ -18,10 +18,6 @@ Run the application using
 java -jar target/lights-out-1.0.jar
 ```
 
-## To do
-- Improve UI element placement 
-- Refactor UI class
-
 ## Contact
 
 For any queries regarding the application, please contact Thomas Kong (txdk2009@gmail.com).
