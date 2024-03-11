@@ -15,7 +15,7 @@ mvn clean package
 
 Run the application using
 ```sh
-java -jar target/lights-out-1.0.jar
+java -jar target/lights-out-1.1.jar
 ```
 
 ## Contact
