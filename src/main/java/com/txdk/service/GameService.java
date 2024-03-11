@@ -16,6 +16,11 @@ public class GameService implements Service {
         return gameRepository.getGameState();
     }
 
+    public void setBoardSize(int boardSize)
+    {
+        gameRepository.setGameState(new boolean[boardSize][boardSize]);
+    }
+
     public boolean getStateFromIndex(int index)
     {
         int row = getRowFromCellIndex(index);

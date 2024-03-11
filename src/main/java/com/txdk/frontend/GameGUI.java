@@ -2,66 +2,67 @@ package com.txdk.frontend;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 
+import com.txdk.Constants;
 import com.txdk.controller.Controller;
 
-public class GameGUI extends JFrame{
+public class GameGUI extends JFrame {
     
+    private int selectedBoardSize;
+
     private JLabel titleLabel;
-    private JLabel textLabel;
+    private TextLabel textLabel;
     private JButton newGameButton;
+    private JSlider slider;
     private JPanel buttonPanel;
     private JPanel containerPanel;
+    private JPanel utilityPanel;
     private ArrayList<JButton> buttonArray;
-
-    private IconResizer iconResizer;
 
     private Controller gameController;
     
     public GameGUI(Controller gameController)
     {
         this.gameController = gameController;
-        iconResizer = new IconResizer();
+
+        selectedBoardSize = Constants.INITIAL_BOARD_SIZE;
         
-        this.setTitle("Lights Out!");
+        this.setTitle(Constants.APP_NAME);
+        this.setLayout(new FlowLayout());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1000, 1000);
+        this.setSize(Constants.GUI_WIDTH, Constants.GUI_HEIGHT);
     }
 
     public void addTitle()
     {
-        titleLabel = new JLabel("Lights Out!");
-        ImageIcon icon = new ImageIcon(getClass().getResource("/static/lightbulb.png"));
-        icon = iconResizer.resize(icon, 100, 100);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 40));
-        titleLabel.setIcon(icon);
-        titleLabel.setVisible(true);
+        titleLabel = new TitleLabel(Constants.APP_NAME);
         containerPanel.add(titleLabel);
     }
 
     public void addText()
     {
-        textLabel = new JLabel();
-        textLabel.setText(
-            "Turn all of the lights green to win!\nClicking on a light toggles its colour as well as that of all of its neighbours."
-            );
-        textLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        textLabel.setVisible(true);
+        textLabel = new TextLabel(Constants.PATH_TO_DISPLAY_TEXT);
         containerPanel.add(textLabel);
     }
 
-    public void createButtons(int boardSize)
+    public void createSlider()
+    {
+        slider = new Slider(selectedBoardSize);
+        slider.addChangeListener(event -> {selectedBoardSize = slider.getValue();});
+        utilityPanel.add(slider);
+    }
+
+    public void createButtonPanel(int boardSize)
     {
         buttonPanel = new JPanel();
         buttonArray = new ArrayList<JButton>();
@@ -71,33 +72,30 @@ public class GameGUI extends JFrame{
         for (int i = 0; i < numButtons; i++)
         {
             int index = i;
-            JButton button = new JButton();
+            JButton button = new GameButton();
             button.addActionListener(event -> {
                 gameController.handleButtonPress(index);
                 syncGUItoGameState();
             });
-            button.setFocusable(false);
-            button.setOpaque(true);
-            button.setContentAreaFilled(true);
-            button.setBorder(BorderFactory.createEtchedBorder());
             buttonPanel.add(button);
             buttonArray.add(button);
         }
 
-        buttonPanel.setPreferredSize(new Dimension(20, 15));
+        buttonPanel.setPreferredSize(new Dimension(Constants.BUTTON_PANEL_WIDTH, Constants.BUTTON_PANEL_HEIGHT));
         containerPanel.add(buttonPanel);
     }
 
     public void createNewGameButton()
     {
-        newGameButton = new JButton();
-        newGameButton.addActionListener(event -> {
-            this.remove(containerPanel);
-            startGame(3);
-        });
-        newGameButton.setText("New Game");
+        newGameButton = new JButton(Constants.NEW_GAME_TEXT);
+        newGameButton.addActionListener(
+            event -> {
+                this.remove(containerPanel);
+                initialiseUI();
+                startGame(selectedBoardSize);
+            });
         newGameButton.setFocusable(false);
-        containerPanel.add(newGameButton);
+        utilityPanel.add(newGameButton);
     }
 
     public Color assignColor(boolean state)
@@ -124,14 +122,23 @@ public class GameGUI extends JFrame{
         }
     }
 
-    public void startGame(int boardSize)
+    public void initialiseUI()
     {
         containerPanel = new JPanel();
         containerPanel.setLayout(new BoxLayout(containerPanel, BoxLayout.Y_AXIS));
+        containerPanel.setSize(Constants.CONTAINER_PANEL_WIDTH, Constants.CONTAINER_PANEL_HEIGHT);
         addTitle();
         addText();
+        utilityPanel = new JPanel();
         createNewGameButton();
-        createButtons(boardSize);
+        createSlider();
+        containerPanel.add(utilityPanel);
+    }
+
+    public void startGame(int boardSize)
+    {
+        gameController.setBoardSize(boardSize);
+        createButtonPanel(boardSize);
         this.getContentPane().add(containerPanel);
         this.setVisible(true);
         gameController.randomiseGameState();
@@ -142,12 +149,6 @@ public class GameGUI extends JFrame{
     {
         disableButtons();
         containerPanel.remove(titleLabel);
-
-        // Edit text label to display a victory message
-        ImageIcon winIcon = new ImageIcon(getClass().getResource("/static/celebrate.png"));
-        winIcon = iconResizer.resize(winIcon, 100, 100);
-        textLabel.setIcon(winIcon);
-        textLabel.setText("You win!");
-        textLabel.setFont(new Font("Arial", Font.BOLD, 40));
+        textLabel.displayWinText();
     }
 }

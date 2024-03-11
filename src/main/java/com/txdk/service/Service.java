@@ -4,6 +4,8 @@ public interface Service {
 
     public boolean[][] getGameState();
 
+    public void setBoardSize(int boardSize);
+
     public boolean getStateFromIndex(int index);
 
     public void toggleCellAtCoords(int row, int col);
