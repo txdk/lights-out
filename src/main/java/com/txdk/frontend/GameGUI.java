@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 
 import com.txdk.controller.Controller;
 
-public class GameGUI extends JFrame{
+public class GameGUI extends JFrame {
     
     private JLabel titleLabel;
     private JLabel textLabel;
@@ -28,6 +28,7 @@ public class GameGUI extends JFrame{
     private ArrayList<JButton> buttonArray;
 
     private IconResizer iconResizer;
+    private FileReader fileReader;
 
     private Controller gameController;
     
@@ -35,6 +36,7 @@ public class GameGUI extends JFrame{
     {
         this.gameController = gameController;
         iconResizer = new IconResizer();
+        fileReader = new FileReader();
         
         this.setTitle("Lights Out!");
         this.setLayout(new FlowLayout());
@@ -57,9 +59,8 @@ public class GameGUI extends JFrame{
     public void addText()
     {
         textLabel = new JLabel();
-        textLabel.setText(
-            "<html>Turn all of the lights <font color=green>green</font> to win!<br><br>Clicking on a light toggles its colour as well as that of all of its neighbours.</html>"
-            );
+        String text = fileReader.readTextFromFile("static/text.html");
+        textLabel.setText(text);
         textLabel.setFont(new Font("Arial", Font.PLAIN, 15));
         textLabel.setSize(300, 50);
         textLabel.setVisible(true);
@@ -96,10 +97,12 @@ public class GameGUI extends JFrame{
     public void createNewGameButton()
     {
         newGameButton = new JButton();
-        newGameButton.addActionListener(event -> {
-            this.remove(containerPanel);
-            startGame(3);
-        });
+        newGameButton.addActionListener(
+            event -> {
+                this.remove(containerPanel);
+                initialiseUI();
+                startGame(3);
+            });
         newGameButton.setText("New Game");
         newGameButton.setFocusable(false);
         utilityPanel.add(newGameButton);
@@ -129,7 +132,7 @@ public class GameGUI extends JFrame{
         }
     }
 
-    public void startGame(int boardSize)
+    public void initialiseUI()
     {
         containerPanel = new JPanel();
         containerPanel.setLayout(new BoxLayout(containerPanel, BoxLayout.Y_AXIS));
@@ -139,6 +142,10 @@ public class GameGUI extends JFrame{
         utilityPanel = new JPanel();
         createNewGameButton();
         containerPanel.add(utilityPanel);
+    }
+
+    public void startGame(int boardSize)
+    {
         createButtons(boardSize);
         this.getContentPane().add(containerPanel);
         this.setVisible(true);

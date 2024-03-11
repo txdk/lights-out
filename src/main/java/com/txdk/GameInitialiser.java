@@ -30,6 +30,7 @@ public class GameInitialiser {
         Service gameService = new GameService(gameRepository);
         Controller gameController = new GameController(gameService);
         GameGUI gui = new GameGUI(gameController);
+        gui.initialiseUI();
         gui.startGame(boardSize);
     }
     
